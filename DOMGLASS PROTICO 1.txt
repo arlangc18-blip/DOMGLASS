@@ -1,0 +1,136 @@
+GDD: Domglass
+1. O Fluxo de Telas (Jornada do Usuário)
+Launcher: Tela inicial simulando um aplicativo (PWA). Verifica atualizações do jogo, exibe notas de atualização (patch notes) e possui um botão de acesso direto ao Discord da comunidade.
+
+Login / Registro: Tela limpa para criação de conta e login via e-mail e senha (usando Firebase Auth).
+
+Lobby (A Mesa de Cartas):
+
+Exibe as cartas de personagens que o jogador já possui (limite máximo de 10).
+
+Cartas mostram a classe, nível e pequenos ícones dos itens equipados nas bordas.
+
+Se houver espaço, exibe o botão "+ Criar Personagem".
+
+Ao clicar em uma carta pronta, surge o botão "Entrar no Jogo".
+
+Criação de Personagem:
+
+Abre um modal detalhado para seleção de Classe (10 opções).
+
+Cada classe exibe sua descrição detalhada, vantagens e fraquezas.
+
+Campo para nomear o personagem.
+
+Mundo Aberto (Mecânica Visual):
+
+Não há 3D. A sensação de movimento é feita com CSS/GSAP: a carta do personagem flutua no centro da tela enquanto o cenário (fundo) rola em parallax.
+
+NPCs: Cartas de NPCs aparecem na tela, o jogador clica, recebe o diálogo e aceita missões. O personagem volta a "andar" automaticamente em direção ao objetivo.
+
+Encontros (Mobs): A tela pisca, o fundo para de rolar, e a carta do Monstro desliza para a tela de forma fluida. O combate se inicia.
+
+Menu In-Game:
+
+Acesso à Mochila (Inventário).
+
+Acesso à Árvore de Atributos (para distribuir pontos ao subir de nível).
+
+Mapa de Seleção (escolher um local específico para farmar monstros).
+
+Acesso à Arena PvP e Eventos.
+
+2. As 10 Classes (Sistema de Counters)
+Cada classe é única e funciona em um sistema de balanceamento onde uma tem vantagem natural sobre a outra.
+
+Guerreiro: Defesa absurda. Ganha escudo por turno baseado na armadura. Countera Assassino.
+
+Mago: Dano em área. Precisa "carregar" feitiços, mas ignora armadura física. Countera Guerreiro.
+
+Assassino: Dano contínuo. Empilha veneno/sangramento a cada ataque. Countera Druida (corta curas).
+
+Arqueiro: Ataques rápidos e alta esquiva. Countera Mago (bate e desvia antes do feitiço carregar).
+
+Druida: Sobrevivência. Cura contínua, roubo de vida e invocação de minicartas. Countera Bardo.
+
+Paladino: Tanque de reflexão. Reflete uma % do dano recebido de volta. Countera Arqueiro.
+
+Necromante: Sobrevida. Pode reviver uma vez por batalha com uma % de HP. Countera Paladino.
+
+Bardo: Suporte agressivo. Buffa drasticamente os atributos do seu Pet. Countera Monge.
+
+Monge: Controle. Silencia o inimigo, impedindo o uso de habilidades especiais. Countera Necromante.
+
+Berserker: Risco e Recompensa. Quanto menor o HP dele, maior o multiplicador de dano. Countera Bardo.
+
+3. Os 10 Atributos (Status)
+A cada nível, o personagem ganha pontos para distribuir.
+
+Força (STR): Aumenta o dano físico e a capacidade da mochila.
+
+Destreza (DEX): Aumenta a chance de esquiva.
+
+Inteligência (INT): Aumenta o dano mágico e a Mana máxima.
+
+Vitalidade (VIT): Aumenta o HP máximo e a regeneração de vida.
+
+Sorte (LUK): Aumenta a chance de drop de itens dos monstros e a chance crítica base.
+
+Agilidade (AGI): Determina quem ataca primeiro no turno.
+
+Foco (FOC): Torna o minigame da Barra de Acerto mais fácil (alarga as zonas verde e vermelha).
+
+Percepção (PER): Ignora a esquiva do inimigo (Counter direto de DEX).
+
+Carisma (CHA): Aumenta a força/eficácia do Pet em combate.
+
+Resiliência (RES): Reduz o dano bruto de acertos críticos recebidos.
+
+4. O Inventário: Equipamentos, Elo, Pets e Asas
+O jogador organiza tudo em uma Mochila visual, podendo arrastar (drag and drop) os itens para os slots da carta.
+
+12 Slots de Equipamento: Capacete, Armadura, Luva, Perneira, Bota, Colar, Brinco, Anel, Arma, Capa, Pet e Asa.
+
+O Elo (Mecânica Central): Um metal/cristal central na carta do personagem. Ele inicia no nível 1. O jogador derrete materiais (drops de monstros) para subi-lo de nível. Cada nível do Elo aumenta os atributos de todas as partes equipadas em 1% (Ex: Elo Nv. 10 = +10% em tudo).
+
+Asas: Não dão status. Servem puramente para estética e status social dentro do jogo (mostrar quem manda).
+
+Pets (10 Tipos Diferentes):
+
+O jogador pode colecionar vários, mas equipa apenas um por vez.
+
+Dão atributos adicionais passivos.
+
+Exemplos: Pet que cura quando o HP cai, Pet que rouba poção, Pet que aumenta o drop temporariamente.
+
+5. O Combate (A Mágica do Jogo)
+O combate ocorre em turnos (estilo DDTank), processado em tempo real via Firestore para PvP.
+
+A Barra de Acerto (Minigame de Habilidade):
+
+Não basta clicar e atacar. Uma barra surge sob a carta com um cursor rápido. O jogador precisa clicar para parar.
+
+Cinza: Dano Mínimo.
+
+Amarelo: Dano Médio.
+
+Verde: Dano Alto (100%).
+
+Vermelho: Dano Crítico e ativa a habilidade especial da classe do personagem.
+
+A Imprevisibilidade (Cartas de Evento):
+
+Para virar o jogo, a cada 3 turnos o sistema joga uma "Carta de Campo" na mesa que afeta os dois lutadores temporariamente (Ex: "Neblina: Esquiva +50%", ou "Vento Mágico: Habilidades custam zero mana").
+
+6. Arena e Torneio dos Campeões (PvP)
+Arena Livre: Disponível sempre. O jogador escolhe o modo: 1v1, 2v2, 3v3 ou Guilda vs Guilda (GvG). O sistema pareia as cartas na mesa virtual.
+
+Torneio dos Campeões:
+
+Acontece todo sábado e domingo, religiosamente às 22:00.
+
+Formato de chaves (Morte Súbita).
+
+Modo Espectador: Jogadores podem assistir às lutas das chaves finais ao vivo.
+
+Prêmio Máximo: O vencedor ganha uma "Asa Dourada" exclusiva e imponente que dura apenas 7 dias, obrigando o campeão a defender seu título no próximo fim de semana para mantê-la.
